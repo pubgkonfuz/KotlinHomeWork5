@@ -1,0 +1,97 @@
+package com.example.kotlinhomework5
+
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import com.example.kotlinhomework5.databinding.ActivityMainBinding
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+    private var count = 0
+    private var galleryImage = 0
+    private val content = registerForActivityResult(ActivityResultContracts.GetContent()) {
+        binding.ivGallery.setImageURI(it)
+        galleryImage = binding.ivGallery.imageAlpha
+        Log.e("TAG", galleryImage.toString())
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        if (savedInstanceState != null) {
+            val savedCount = savedInstanceState.getInt(COUNT_KEY)
+            count = savedCount
+        }
+
+        binding.tvCounter.text = count.toString()
+
+        openImage()
+        setupCount()
+    }
+
+    private fun setupCount() = with(binding) {
+        btnIncrement.setOnClickListener {
+            if (tvCounter.text == "10") {
+                val intent = Intent(this@MainActivity, CarListActivity::class.java)
+                startActivity(intent)
+            } else {
+                tvCounter.text = (++count).toString()
+            }
+        }
+
+        btnDecrement.setOnClickListener {
+            if (tvCounter.text == "0") {
+            } else {
+                tvCounter.text = (--count).toString()
+            }
+        }
+    }
+
+    private fun openImage() = with(binding) {
+        ivGallery.setOnClickListener {
+            content.launch("image/*")
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.apply {
+            putInt(COUNT_KEY, count)
+            putInt(GALLERY_KEY, galleryImage)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+    companion object {
+        const val COUNT_KEY = "count"
+        const val GALLERY_KEY = "gallery"
+    }
+}
