@@ -1,20 +1,22 @@
 package com.example.kotlinhomework5
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toBitmap
 import com.example.kotlinhomework5.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var count = 0
-    private var galleryImage = 0
+    private var galleryImage: Bitmap? = null
     private val content = registerForActivityResult(ActivityResultContracts.GetContent()) {
         binding.ivGallery.setImageURI(it)
-        galleryImage = binding.ivGallery.imageAlpha
+        galleryImage = binding.ivGallery.drawable.toBitmap()
         Log.e("TAG", galleryImage.toString())
     }
 
@@ -26,10 +28,13 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState != null) {
             val savedCount = savedInstanceState.getInt(COUNT_KEY)
             count = savedCount
+            val imageBitmap = savedInstanceState.getParcelable<Bitmap>(GALLERY_KEY)
+            galleryImage = imageBitmap
+
         }
 
         binding.tvCounter.text = count.toString()
-
+        binding.ivGallery.setImageBitmap(galleryImage)
         openImage()
         setupCount()
     }
@@ -82,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.apply {
             putInt(COUNT_KEY, count)
-            putInt(GALLERY_KEY, galleryImage)
+            putParcelable(GALLERY_KEY, galleryImage)
         }
     }
 
