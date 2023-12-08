@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupCount() = with(binding) {
         btnIncrement.setOnClickListener {
-            if (tvCounter.text == "10") {
+            if (count == 10) {
                 val intent = Intent(this@MainActivity, CarListActivity::class.java)
                 startActivity(intent)
             } else {
@@ -50,8 +50,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnDecrement.setOnClickListener {
-            if (tvCounter.text == "0") {
-            } else {
+            if (count != 0) {
                 tvCounter.text = (--count).toString()
             }
         }
